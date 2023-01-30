@@ -59,6 +59,9 @@ function AlbumPicker() {
                 {albums.map((album) => (
                     <li>{album}</li>
                 ))}
+                {albums.map((date) => (
+                    <li>{date}</li>
+                ))}
             </ol>
         </form>
     );
