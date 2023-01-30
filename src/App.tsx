@@ -34,10 +34,11 @@ function App() {
 function AlbumPicker() {
     const [albums, setAlbums] = useState<string[]>([]);
     const [dates, setDates] = useState<string[]>([]);
-    async function handleSubmit(e: FormEvent) {
+    async function handleSubmitartist(e: FormEvent) {
         e.preventDefault();
         const target = e.target as typeof e.target & {
             artist: { value: string };
+            album: { value: string };
         };
         const artist = encodeURIComponent(target.artist.value);
         const url = `https://musicbrainz.org/ws/2/release?fmt=json&query=artist:${artist}`;
@@ -50,16 +51,34 @@ function AlbumPicker() {
         setAlbums(releases.map(({ title}) => title ));
         setDates(releases.map(({ date}) => date ));
     }
+
+    async function handleSubmitalbum(e: FormEvent) {
+        e.preventDefault();
+        const target = e.target as typeof e.target & {
+            artist: { value: string };
+            album: { value: string };
+        };
+        const artist = encodeURIComponent(target.artist.value);
+        const album = encodeURIComponent(target.album.value);
+        const url = `https://musicbrainz.org/ws/2/release?fmt=json&query=album:${album}`;
+        const response = await fetch(url);
+        const mbResult = (await response.json()) as {
+            releases: { title: string, date: string }[];
+        };
+        const { releases } = mbResult;
+
+        setAlbums(releases.map(({ title}) => title ));
+        setDates(releases.map(({ date}) => date ));
+    }
+
+
+
     return (
-        <form onSubmit={handleSubmit}>
+        <div>
+        <form onSubmit={handleSubmitartist}>
             <label>
                 Artist name:
                 <input name="artist" />
-            </label>
-            <button type="submit">Search</button>
-            <label>
-                Album name:
-                <input name="album" />
             </label>
             <button type="submit">Search</button>
             <p>Albums:</p>
@@ -69,6 +88,22 @@ function AlbumPicker() {
                 ))}
             </ol>
         </form>
+
+            <form onSubmit={handleSubmitalbum}>
+                <label>
+                    Album name:
+                    <input name="album" />
+                </label>
+                <button type="submit">Search</button>
+                <p>Albums:</p>
+                <ol>
+                    {albums.map((album) => (
+                        <li>{album + "--" + dates.at(albums.indexOf(album))}</li>
+                    ))}
+                </ol>
+            </form>
+
+        </div>
     );
 }
 
