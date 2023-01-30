@@ -33,6 +33,7 @@ function App() {
 
 function AlbumPicker() {
     const [albums, setAlbums] = useState<string[]>([]);
+    const [dates, setDates] = useState<string[]>([]);
     async function handleSubmit(e: FormEvent) {
         e.preventDefault();
         const target = e.target as typeof e.target & {
@@ -45,7 +46,9 @@ function AlbumPicker() {
             releases: { title: string, date: string }[];
         };
         const { releases } = mbResult;
-        setAlbums(releases.map(({ title, date }) => title));
+
+        setAlbums(releases.map(({ title}) => title ));
+        setDates(releases.map(({ date}) => date ));
     }
     return (
         <form onSubmit={handleSubmit}>
@@ -57,7 +60,7 @@ function AlbumPicker() {
             <p>Albums:</p>
             <ol>
                 {albums.map((album) => (
-                    <li>{album}</li>
+                    <li>{album + "--" + dates.at(albums.indexOf(album))}</li>
                 ))}
             </ol>
         </form>
